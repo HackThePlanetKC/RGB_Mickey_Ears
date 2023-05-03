@@ -38,70 +38,66 @@ tilt.pull = Pull.DOWN
 strip_pixels_L = neopixel.NeoPixel(pixel_pin_L, pixel_num, brightness=0.5, auto_write=False)
 strip_pixels_R = neopixel.NeoPixel(pixel_pin_R, pixel_num, brightness=0.5, auto_write=False)
 
-#Set up pixels
-#pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=0.5, auto_write=False)
-
-#Set variables for all effects
-#blink = Blink(pixels, speed=0.5, color=GREEN)
-#comet = Comet(pixels, speed=0.1, color=RED, tail_length=5, bounce=True)
-#pulse = Pulse(pixels, speed=0.1, color=BLUE, period=20)
-#sparkle = Sparkle(pixels, speed=0.5, color=AMBER, num_sparkles=5)
-#parkle_pulse = SparklePulse(pixels, speed=0.05, period=1, color=JADE)
-#rainbow_sparkle = RainbowSparkle(pixels, speed=0.1, num_sparkles=5)
-
-#Set animation sequence and timing
-#animations = AnimationSequence(
-#	blink,
-#	pulse,
-#	comet,
-#	sparkle,
-#	sparkle_pulse,
-#	rainbow_sparkle,
-#	advance_interval=5,
-#	auto_clear=True,
-#)
+clearL = strip_pixels_L.fill((0,0,0))
+clearR = strip_pixels_R.fill((0,0,0))
 
 #Set animation group animations
 rainbow_sparkle = AnimationSequence(
+	#clearL,
+	#clearR,
 	AnimationGroup(
 		RainbowSparkle(strip_pixels_L, 0.1, num_sparkles=5),
 		RainbowSparkle(strip_pixels_R, 0.1, num_sparkles=5),
-		sync=True,
-	),
+		sync=False,
+	),auto_clear=True
 )
 
 solid_sparkle_L = AnimationSequence(
+	#clearL,
+	#clearR,
 	AnimationGroup(
 		Sparkle(strip_pixels_L, 0.1, color=AMBER, num_sparkles=7),
 		sync=True,
-	),
+	),auto_clear=True
 )
 
 solid_sparkle_R = AnimationSequence(
+	#clearL,
+	#clearR,
 	AnimationGroup(
 		Sparkle(strip_pixels_R, 0.1, color=AMBER, num_sparkles=7),
 		sync=True,
-	),
+	),auto_clear=True
 )
 
 comets = AnimationSequence(
+	#clearL,
+	#clearR,
 	AnimationGroup(
 		Comet(strip_pixels_L, 0.1, color=GREEN, tail_length=5, bounce=True),
 		Comet(strip_pixels_R, 0.1, color=GREEN, tail_length=5, bounce=True),
 		sync=True,
-	),
+	),auto_clear=True
 )
 
 chase = AnimationSequence(
+	#clearL,
+	#clearR,
 	AnimationGroup(
 		Chase(strip_pixels_L, 0.1, size=3, spacing=4, color=BLUE),
 		Chase(strip_pixels_R, 0.1, size=3, spacing=4, color=BLUE),
 		sync=True,
-	),
+	),auto_clear=True
 )
+
+#clear = AnimationSequence(
+#    strip_pixels_L.fill((0,0,0)),
+#    strip_pixels_R.fill((0,0,0)),
+#)	
 
 #List of animations
 animations_list = [
+	comets,
 	chase,
 	solid_sparkle_L,
 	solid_sparkle_R,
@@ -110,36 +106,33 @@ animations_list = [
 ]
 
 list_pos = 0
+last_state = False
 
 #run it
 while True:
-    #blink.animate()
-    #pulse.animate()
-    #comet.animate()
-    #sparkle.animate()
-    #sparkle_pulse.animate()
-    #animations.animate()
-    #comets.animate(),
-    #print(tilt.value)
-    #if tilt.value == False:
-    #	print("Tilted")
     
-
-#Next few lines are trying to get the tilt switch to iterate through the list of animations
   tilt_value = tilt.value
+  current_state = tilt.value
 
   # If the tilt switch is in the False state, iterate through the list.
-  if tilt_value == False:
+  if current_state == False and last_state == False:
+    #strip_pixels_L.fill((0,0,0))
+    #strip_pixels_R.fill((0,0,0))
     print(animations_list[list_pos])
     #animations_list[list_pos].animate()
     print(list_pos)
-    list_pos = (list_pos + 1) % len(animations_list)    
-    while tilt_value == False:
-      #time.sleep(1)
+    list_pos = (list_pos + 1) % len(animations_list) 
+    time.sleep(0.5)   
+  if current_state == True:
       animations_list[list_pos].animate()
-      tilt_value = tilt.value
+  last_state = current_state  
+  
+    #while tilt_value == False:
+      #time.sleep(1)
+      #animations_list[list_pos].animate()
+      #tilt_value = tilt.value
 
   # If the tilt switch is in the True state, reset the current item to the default value.
-  elif tilt_value == True:
-    comets.animate()
+  #elif tilt_value == True:
+    #comets.animate()
   #time.sleep(1)
