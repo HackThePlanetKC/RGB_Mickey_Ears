@@ -72,14 +72,14 @@ rainbow_sparkle = AnimationSequence(
 
 solid_sparkle_L = AnimationSequence(
 	AnimationGroup(
-		Sparkle(strip_pixels_L, 0.1, num_sparkles=5),
+		Sparkle(strip_pixels_L, 0.1, color=AMBER, num_sparkles=7),
 		sync=True,
 	),
 )
 
 solid_sparkle_R = AnimationSequence(
 	AnimationGroup(
-		Sparkle(strip_pixels_R, 0.1, num_sparkles=5),
+		Sparkle(strip_pixels_R, 0.1, color=AMBER, num_sparkles=7),
 		sync=True,
 	),
 )
@@ -100,6 +100,17 @@ chase = AnimationSequence(
 	),
 )
 
+#List of animations
+animations_list = [
+	chase,
+	solid_sparkle_L,
+	solid_sparkle_R,
+	rainbow_sparkle,
+	#auto_clear=True
+]
+
+list_pos = 0
+
 #run it
 while True:
     #blink.animate()
@@ -108,7 +119,27 @@ while True:
     #sparkle.animate()
     #sparkle_pulse.animate()
     #animations.animate()
-    group_animations.animate(),
+    #comets.animate(),
     #print(tilt.value)
-    if tilt.value == False:
-    	print("Tilted")
+    #if tilt.value == False:
+    #	print("Tilted")
+    
+
+#Next few lines are trying to get the tilt switch to iterate through the list of animations
+  tilt_value = tilt.value
+
+  # If the tilt switch is in the False state, iterate through the list.
+  if tilt_value == False:
+    print(animations_list[list_pos])
+    #animations_list[list_pos].animate()
+    print(list_pos)
+    list_pos = (list_pos + 1) % len(animations_list)    
+    while tilt_value == False:
+      #time.sleep(1)
+      animations_list[list_pos].animate()
+      tilt_value = tilt.value
+
+  # If the tilt switch is in the True state, reset the current item to the default value.
+  elif tilt_value == True:
+    comets.animate()
+  #time.sleep(1)
