@@ -13,13 +13,11 @@ import time
 #Import ALL THE THINGS
 from adafruit_led_animation.color import RED, GREEN, AMBER, JADE, BLUE
 from adafruit_led_animation.animation.blink import Blink
-from adafruit_led_animation.animation.pulse import Pulse
 from adafruit_led_animation.animation.comet import Comet
 from adafruit_led_animation.animation.chase import Chase
 from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.SparklePulse import SparklePulse
 from adafruit_led_animation.animation.rainbowsparkle import RainbowSparkle
-from adafruit_led_animation.animation.multicolor_comet import MulticolorComet
 from adafruit_led_animation.animation.rainbowcomet import RainbowComet
 from adafruit_led_animation.sequence import AnimationSequence
 from adafruit_led_animation.group import AnimationGroup
@@ -97,7 +95,6 @@ animations_list = [
 	solid_sparkle_L,
 	solid_sparkle_R,
 	rainbow_comet,
-	#auto_clear=True
 ]
 
 list_pos = 0
