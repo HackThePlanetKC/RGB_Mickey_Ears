@@ -14,7 +14,7 @@ import time
 from adafruit_led_animation.color import RED, GREEN, AMBER, JADE, BLUE
 from adafruit_led_animation.animation.blink import Blink
 from adafruit_led_animation.animation.comet import Comet
-from adafruit_led_animation.animation.chase import Chase
+from adafruit_led_animation.animation.rainbowchase import RainbowChase
 from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.SparklePulse import SparklePulse
 from adafruit_led_animation.animation.rainbowsparkle import RainbowSparkle
@@ -34,8 +34,8 @@ tilt.direction = Direction.INPUT
 tilt.pull = Pull.DOWN
 
 #Set up animation groups
-strip_pixels_L = neopixel.NeoPixel(pixel_pin_L, pixel_num, brightness=0.5, auto_write=False)
-strip_pixels_R = neopixel.NeoPixel(pixel_pin_R, pixel_num, brightness=0.5, auto_write=False)
+strip_pixels_L = neopixel.NeoPixel(pixel_pin_L, pixel_num, brightness=0.25, auto_write=False)
+strip_pixels_R = neopixel.NeoPixel(pixel_pin_R, pixel_num, brightness=0.25, auto_write=False)
 
 clearL = strip_pixels_L.fill((0,0,0))
 clearR = strip_pixels_R.fill((0,0,0))
@@ -71,10 +71,10 @@ comets = AnimationSequence(
 	),auto_clear=True
 )
 
-chase = AnimationSequence(
+rainbow_chase = AnimationSequence(
 	AnimationGroup(
-		Chase(strip_pixels_L, 0.1, size=3, spacing=4, color=BLUE),
-		Chase(strip_pixels_R, 0.1, size=3, spacing=4, color=BLUE),
+		RainbowChase(strip_pixels_L, speed=0.1, size=3, spacing=3),
+		RainbowChase(strip_pixels_R, speed=0.1, size=3, spacing=3),
 		sync=True,
 	),auto_clear=True
 )
@@ -91,7 +91,7 @@ rainbow_comet = AnimationSequence(
 animations_list = [
 	rainbow_sparkle,
 	comets,
-	chase,
+	rainbow_chase,
 	solid_sparkle_L,
 	solid_sparkle_R,
 	rainbow_comet,
