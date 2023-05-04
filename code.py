@@ -1,6 +1,6 @@
 #Things left to do:
 
-#Figure out how to get the tilt to advance animations
+#Figure out how to get the tilt to advance animations - Done
 #buy good accelerometer
 #Get side light strips
 #Get a lipo battery pack
