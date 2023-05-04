@@ -122,17 +122,8 @@ while True:
     #animations_list[list_pos].animate()
     print(list_pos)
     list_pos = (list_pos + 1) % len(animations_list) 
+    animations_list[0].fill((0,0,0))
     time.sleep(0.5)   
   if current_state == True:
       animations_list[list_pos].animate()
   last_state = current_state  
-  
-    #while tilt_value == False:
-      #time.sleep(1)
-      #animations_list[list_pos].animate()
-      #tilt_value = tilt.value
-
-  # If the tilt switch is in the True state, reset the current item to the default value.
-  #elif tilt_value == True:
-    #comets.animate()
-  #time.sleep(1)
