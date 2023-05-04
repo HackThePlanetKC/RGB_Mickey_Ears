@@ -20,6 +20,7 @@ from adafruit_led_animation.animation.sparkle import Sparkle
 from adafruit_led_animation.animation.SparklePulse import SparklePulse
 from adafruit_led_animation.animation.rainbowsparkle import RainbowSparkle
 from adafruit_led_animation.animation.multicolor_comet import MulticolorComet
+from adafruit_led_animation.animation.rainbowcomet import RainbowComet
 from adafruit_led_animation.sequence import AnimationSequence
 from adafruit_led_animation.group import AnimationGroup
 from digitalio import DigitalInOut, Direction, Pull
@@ -43,8 +44,6 @@ clearR = strip_pixels_R.fill((0,0,0))
 
 #Set animation group animations
 rainbow_sparkle = AnimationSequence(
-	#clearL,
-	#clearR,
 	AnimationGroup(
 		RainbowSparkle(strip_pixels_L, 0.1, num_sparkles=5),
 		RainbowSparkle(strip_pixels_R, 0.1, num_sparkles=5),
@@ -53,8 +52,6 @@ rainbow_sparkle = AnimationSequence(
 )
 
 solid_sparkle_L = AnimationSequence(
-	#clearL,
-	#clearR,
 	AnimationGroup(
 		Sparkle(strip_pixels_L, 0.1, color=AMBER, num_sparkles=7),
 		sync=True,
@@ -62,8 +59,6 @@ solid_sparkle_L = AnimationSequence(
 )
 
 solid_sparkle_R = AnimationSequence(
-	#clearL,
-	#clearR,
 	AnimationGroup(
 		Sparkle(strip_pixels_R, 0.1, color=AMBER, num_sparkles=7),
 		sync=True,
@@ -71,8 +66,6 @@ solid_sparkle_R = AnimationSequence(
 )
 
 comets = AnimationSequence(
-	#clearL,
-	#clearR,
 	AnimationGroup(
 		Comet(strip_pixels_L, 0.1, color=GREEN, tail_length=5, bounce=True),
 		Comet(strip_pixels_R, 0.1, color=GREEN, tail_length=5, bounce=True),
@@ -81,8 +74,6 @@ comets = AnimationSequence(
 )
 
 chase = AnimationSequence(
-	#clearL,
-	#clearR,
 	AnimationGroup(
 		Chase(strip_pixels_L, 0.1, size=3, spacing=4, color=BLUE),
 		Chase(strip_pixels_R, 0.1, size=3, spacing=4, color=BLUE),
@@ -90,18 +81,22 @@ chase = AnimationSequence(
 	),auto_clear=True
 )
 
-#clear = AnimationSequence(
-#    strip_pixels_L.fill((0,0,0)),
-#    strip_pixels_R.fill((0,0,0)),
-#)	
+rainbow_comet = AnimationSequence(
+	AnimationGroup(
+		RainbowComet(strip_pixels_L, speed=0.1, tail_length=6, bounce=False),
+		RainbowComet(strip_pixels_R, speed=0.1, tail_length=6, bounce=False),
+		sync=True,
+	),
+)
 
 #List of animations
 animations_list = [
+	rainbow_sparkle,
 	comets,
 	chase,
 	solid_sparkle_L,
 	solid_sparkle_R,
-	rainbow_sparkle,
+	rainbow_comet,
 	#auto_clear=True
 ]
 
@@ -111,19 +106,17 @@ last_state = False
 #run it
 while True:
     
-  tilt_value = tilt.value
   current_state = tilt.value
 
   # If the tilt switch is in the False state, iterate through the list.
   if current_state == False and last_state == False:
-    #strip_pixels_L.fill((0,0,0))
-    #strip_pixels_R.fill((0,0,0))
     print(animations_list[list_pos])
     #animations_list[list_pos].animate()
     print(list_pos)
     list_pos = (list_pos + 1) % len(animations_list) 
     animations_list[0].fill((0,0,0))
-    time.sleep(0.5)   
+    time.sleep(0.5)  
+  #The following does work, but the tilt sensor I'm using is just too sensitive to be practical for this usage. Right now, it will clear the strips and start fresh with every animation. 
   if current_state == True:
       animations_list[list_pos].animate()
   last_state = current_state  
