@@ -31,7 +31,7 @@ pixel_num = 15
 #Set Tilt Switch
 tilt = DigitalInOut(board.GP10)
 tilt.direction = Direction.INPUT
-tilt.pull = Pull.DOWN
+#tilt.pull = Pull.DOWN
 
 #Set up animation groups
 strip_pixels_L = neopixel.NeoPixel(pixel_pin_L, pixel_num, brightness=0.25, auto_write=False)
@@ -107,16 +107,19 @@ while True:
   current_state = tilt.value
 
   # If the tilt switch is in the False state, iterate through the list.
-  if current_state == False and last_state == False: #and time.time() - last_trigger_time > 5.5:
+  #if current_state == False and last_state == False: #and time.time() - last_trigger_time > 5.5:
+  #Added an RC debounce circuit, had to swap the triggers. 
+  if current_state == True:
     print(animations_list[list_pos])
     print(list_pos)
     list_pos = (list_pos + 1) % len(animations_list) 
     animations_list[0].fill((0,0,0))
     last_trigger_time = time.time()
-    time.sleep(0.5)  
+    time.sleep(0.25)  
     
   #The following does work, but the tilt sensor I'm using is just too sensitive to be practical for this usage. Right now, it will clear the strips and start fresh with every animation. 
-  if current_state == True:# and time.time() - last_trigger_time > 2:
+  #if current_state == True:# and time.time() - last_trigger_time > 2:
+  if current_state == False and last_state == False:
       animations_list[list_pos].animate()
 
   last_state = current_state  
