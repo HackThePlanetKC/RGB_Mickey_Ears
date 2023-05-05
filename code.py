@@ -32,9 +32,8 @@ pixel_num = 15
 #Set Tilt Switch
 tilt = DigitalInOut(board.GP10)
 tilt.direction = Direction.INPUT
-#tilt.pull = Pull.DOWN
 
-#Try to debounce
+#debounce it
 tilt_switch = Debouncer(tilt)
 
 #Set up animation groups
@@ -114,24 +113,22 @@ while True:
   tilt_switch.update()
 
   # If the tilt switch is in the True state, iterate through the list.
-  #if current_state == False and last_state == False: #and time.time() - last_trigger_time > 5.5:
-  #Added an RC debounce circuit, had to swap the triggers. 
-  #if current_state == True:
-  #Attempt to add debounced trigger
-  if tilt_switch.rose and tilt_switch.last_duration > 5:
-    print("Tilted. Was up for ", tilt_switch.last_duration)
+  #Added an RC debounce circuit
+  #Attempt to add debounced trigger, it works! It only changes animations when it tilts for >0.5s
+  if tilt_switch.value == True and tilt_switch.current_duration > 0.5:
+    print("Tilted. Was up for ", tilt_switch.last_duration, tilt_switch.value)
     print(animations_list[list_pos])
     print(list_pos)
     list_pos = (list_pos + 1) % len(animations_list) 
     animations_list[0].fill((0,0,0))
     last_trigger_time = time.time()
-    time.sleep(0.2)  
+    time.sleep(0.25)  
     
-  #The following does work, but the tilt sensor I'm using is just too sensitive to be practical for this usage. Right now, it will clear the strips and start fresh with every animation. 
-  #if current_state == True:# and time.time() - last_trigger_time > 2:
-  #if current_state == False and last_state == False:
-  elif tilt_switch.fell:
+  #Okie, this works to debounce it and only run when it's upright _and_ only changes when you tilt it for more than 0.5s
+  elif tilt_switch.value == False:
       print("Should be up now, was tilted for ", tilt_switch.last_duration)
+      print(tilt_switch.value)
+      animations_list[list_pos].animate()
   else:
       #print("Stable")
       animations_list[list_pos].animate()
