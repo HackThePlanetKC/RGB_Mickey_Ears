@@ -99,6 +99,7 @@ animations_list = [
 
 list_pos = 0
 last_state = False
+last_trigger_time = 0
 
 #run it
 while True:
@@ -106,14 +107,16 @@ while True:
   current_state = tilt.value
 
   # If the tilt switch is in the False state, iterate through the list.
-  if current_state == False and last_state == False:
+  if current_state == False and last_state == False: #and time.time() - last_trigger_time > 5.5:
     print(animations_list[list_pos])
-    #animations_list[list_pos].animate()
     print(list_pos)
     list_pos = (list_pos + 1) % len(animations_list) 
     animations_list[0].fill((0,0,0))
+    last_trigger_time = time.time()
     time.sleep(0.5)  
+    
   #The following does work, but the tilt sensor I'm using is just too sensitive to be practical for this usage. Right now, it will clear the strips and start fresh with every animation. 
-  if current_state == True:
+  if current_state == True:# and time.time() - last_trigger_time > 2:
       animations_list[list_pos].animate()
+
   last_state = current_state  
