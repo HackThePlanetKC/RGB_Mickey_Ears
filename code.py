@@ -22,6 +22,7 @@ from adafruit_led_animation.animation.rainbowcomet import RainbowComet
 from adafruit_led_animation.sequence import AnimationSequence
 from adafruit_led_animation.group import AnimationGroup
 from digitalio import DigitalInOut, Direction, Pull
+from adafruit_debouncer import Debouncer
 
 #Set board pin and count
 pixel_pin_L = board.GP15
@@ -32,6 +33,9 @@ pixel_num = 15
 tilt = DigitalInOut(board.GP10)
 tilt.direction = Direction.INPUT
 #tilt.pull = Pull.DOWN
+
+#Try to debounce
+tilt_switch = Debouncer(tilt)
 
 #Set up animation groups
 strip_pixels_L = neopixel.NeoPixel(pixel_pin_L, pixel_num, brightness=0.25, auto_write=False)
@@ -105,21 +109,31 @@ last_trigger_time = 0
 while True:
     
   current_state = tilt.value
+  
+  #debouncing stuff
+  tilt_switch.update()
 
-  # If the tilt switch is in the False state, iterate through the list.
+  # If the tilt switch is in the True state, iterate through the list.
   #if current_state == False and last_state == False: #and time.time() - last_trigger_time > 5.5:
   #Added an RC debounce circuit, had to swap the triggers. 
-  if current_state == True:
+  #if current_state == True:
+  #Attempt to add debounced trigger
+  if tilt_switch.rose and tilt_switch.last_duration > 5:
+    print("Tilted. Was up for ", tilt_switch.last_duration)
     print(animations_list[list_pos])
     print(list_pos)
     list_pos = (list_pos + 1) % len(animations_list) 
     animations_list[0].fill((0,0,0))
     last_trigger_time = time.time()
-    time.sleep(0.25)  
+    time.sleep(0.2)  
     
   #The following does work, but the tilt sensor I'm using is just too sensitive to be practical for this usage. Right now, it will clear the strips and start fresh with every animation. 
   #if current_state == True:# and time.time() - last_trigger_time > 2:
-  if current_state == False and last_state == False:
+  #if current_state == False and last_state == False:
+  elif tilt_switch.fell:
+      print("Should be up now, was tilted for ", tilt_switch.last_duration)
+  else:
+      #print("Stable")
       animations_list[list_pos].animate()
 
   last_state = current_state  
